@@ -9,6 +9,7 @@
 #include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 #include "logger.h"
 
 Logger::Logger(std::string file):level(INFO), cli(1)
@@ -42,73 +43,211 @@ Logger::~Logger()
 
 void Logger::trace(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= TRACE)
 	{
-		write_log(TRACE, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(TRACE, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(TRACE, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
 void Logger::debug(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= DEBUG)
 	{
-		write_log(DEBUG, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(DEBUG, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(DEBUG, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
 void Logger::info(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= INFO)
 	{
-		write_log(INFO, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(INFO, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(INFO, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
 void Logger::warn(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= WARN)
 	{
-		write_log(WARN, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(WARN, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(WARN, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
 void Logger::error(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= ERROR)
 	{
-		write_log(ERROR, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(ERROR, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(ERROR, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
 void Logger::fatal(std::string msg)
 {
-	if(fd < 0) return;
+	//block all sinal
+	sigset_t newmask, oldmask;
+	sigfillset(&newmask);
+	if(sigprocmask(SIG_BLOCK, &newmask, &oldmask) < 0)
+	{
+		std::string str("logger sigprocmask SIG_BLOCK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
+	}
 
 	if(level <= FATAL)
 	{
-		write_log(FATAL, fd, msg.c_str(), msg.size());
+		if(fd > 0)
+			write_log(FATAL, fd, msg.c_str(), msg.size());
 		if(cli)
 			write_screen(FATAL, STDOUT_FILENO, msg.c_str(), msg.size());
+	}
+
+	//resume old singal
+	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0)
+	{
+		std::string str("logger sigprocmask SIG_SETMASK error");
+		if(fd > 0)
+			write_log(FATAL, fd, str.c_str(), str.size());
+		if(cli)
+			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+		exit(EXIT_FAILURE);
 	}
 }
 
