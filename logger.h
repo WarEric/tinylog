@@ -1,6 +1,9 @@
 /**
  * A simple log class. It record log messages to a file in current directory.
- * I try my best to make it as easy as log4j(java) library.
+ * I try my best to make it as easy as log4j(java) library. You must remember
+ * to append "-lpthread" in your compile command because I use pthread mutex
+ * to maintain thread safe. 
+ *
  * by wareric@163.com 2018-10-21
  **/
 #ifndef LOGGER_H_H
@@ -43,5 +46,6 @@ class Logger{
 		int level;				// trace < debug < info < warn < error < fatal
 		int fd;					// logfd
 		int cli;				// 1 represent print to CLI, 0 represent not.
+		pthread_mutex_t mutex;
 };
 #endif

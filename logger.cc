@@ -18,6 +18,11 @@ Logger::Logger(std::string file):level(INFO), cli(1)
 		std::cerr << "create logfile " << file << " fail." << std::endl;
 		fd = -1;
 	}
+	
+	if(pthread_mutex_init(&mutex, NULL) != 0)
+	{
+		std::cerr << "logger pthread_mutex_init fail" << std::endl;
+	}
 }
 
 Logger::Logger(std::string file, LEVEL lev):level(lev), cli(1)
@@ -25,6 +30,11 @@ Logger::Logger(std::string file, LEVEL lev):level(lev), cli(1)
 	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
 		std::cerr << "create logfile " << file << " fail." << std::endl;
 		fd = -1;
+	}
+
+	if(pthread_mutex_init(&mutex, NULL) != 0)
+	{
+		std::cerr << "logger pthread_mutex_init fail" << std::endl;
 	}
 }
 
@@ -34,15 +44,23 @@ Logger::Logger(std::string file, LEVEL lev, int openflag):level(lev), cli(openfl
 		std::cerr << "create logfile " << file << " fail." << std::endl;
 		fd = -1;
 	}
+
+	if(pthread_mutex_init(&mutex, NULL) != 0)
+	{
+		std::cerr << "logger pthread_mutex_init fail" << std::endl;
+	}
 }
 
 Logger::~Logger()
 {
 	if(fd > 0) close(fd);
+	pthread_mutex_destroy(&mutex);
 }
 
 void Logger::trace(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -74,10 +92,14 @@ void Logger::trace(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::debug(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -109,10 +131,14 @@ void Logger::debug(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::info(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -144,10 +170,14 @@ void Logger::info(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::warn(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -179,10 +209,14 @@ void Logger::warn(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::error(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -214,10 +248,14 @@ void Logger::error(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 void Logger::fatal(std::string msg)
 {
+	pthread_mutex_lock(&mutex);
+
 	//block all sinal
 	sigset_t newmask, oldmask;
 	sigfillset(&newmask);
@@ -249,6 +287,8 @@ void Logger::fatal(std::string msg)
 			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
 		exit(EXIT_FAILURE);
 	}
+
+	pthread_mutex_unlock(&mutex);
 }
 
 int Logger::write_log(LEVEL level, int fd, const void *buf, size_t count)
