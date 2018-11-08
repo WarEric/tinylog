@@ -68,18 +68,18 @@ void Logger::trace(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= TRACE)
 	{
 		if(fd > 0)
-			write_log(TRACE, fd, msg.c_str(), msg.size());
+			write_log(TRACE, fd, msg);
 		if(cli)
-			write_screen(TRACE, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(TRACE, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -87,9 +87,9 @@ void Logger::trace(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
@@ -107,18 +107,18 @@ void Logger::debug(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= DEBUG)
 	{
 		if(fd > 0)
-			write_log(DEBUG, fd, msg.c_str(), msg.size());
+			write_log(DEBUG, fd, msg);
 		if(cli)
-			write_screen(DEBUG, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(DEBUG, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -126,9 +126,9 @@ void Logger::debug(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
@@ -146,18 +146,18 @@ void Logger::info(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= INFO)
 	{
 		if(fd > 0)
-			write_log(INFO, fd, msg.c_str(), msg.size());
+			write_log(INFO, fd, msg);
 		if(cli)
-			write_screen(INFO, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(INFO, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -165,9 +165,9 @@ void Logger::info(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
@@ -185,18 +185,18 @@ void Logger::warn(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= WARN)
 	{
 		if(fd > 0)
-			write_log(WARN, fd, msg.c_str(), msg.size());
+			write_log(WARN, fd, msg);
 		if(cli)
-			write_screen(WARN, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(WARN, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -204,9 +204,9 @@ void Logger::warn(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
@@ -224,18 +224,18 @@ void Logger::error(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= ERROR)
 	{
 		if(fd > 0)
-			write_log(ERROR, fd, msg.c_str(), msg.size());
+			write_log(ERROR, fd, msg);
 		if(cli)
-			write_screen(ERROR, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(ERROR, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -243,9 +243,9 @@ void Logger::error(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
@@ -263,18 +263,18 @@ void Logger::fatal(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	if(level <= FATAL)
 	{
 		if(fd > 0)
-			write_log(FATAL, fd, msg.c_str(), msg.size());
+			write_log(FATAL, fd, msg);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, msg.c_str(), msg.size());
+			write_screen(FATAL, STDOUT_FILENO, msg);
 	}
 
 	//resume old singal
@@ -282,85 +282,83 @@ void Logger::fatal(std::string msg)
 	{
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
-			write_log(FATAL, fd, str.c_str(), str.size());
+			write_log(FATAL, fd, str);
 		if(cli)
-			write_screen(FATAL, STDOUT_FILENO, str.c_str(), str.size());
+			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
 	pthread_mutex_unlock(&mutex);
 }
 
-int Logger::write_log(LEVEL level, int fd, const void *buf, size_t count)
+int Logger::write_log(LEVEL level, int fd, std::string msg)
 {
-	std::string time = logtime();
-	write(fd, time.c_str(), time.size());
 	switch(level){
 		case TRACE:
-			write(fd, " TRACE: ", strlen(" TRACE: "));
+			msg.insert(0, " TRACE: ");
 			break;
 		case DEBUG:
-			write(fd, " DEBUG: ", strlen(" DEBUG: "));
+			msg.insert(0, " DEBUG: ");
 			break;
 		case INFO:
-			write(fd, " INFO: ", strlen(" INFO: "));
+			msg.insert(0, " INFO:  ");
 			break;
 		case WARN:
-			write(fd, " WARN: ", strlen(" WARN: "));
+			msg.insert(0, " WARN:  ");
 			break;
 		case ERROR:
-			write(fd, " ERROR: ", strlen(" ERROR: "));
+			msg.insert(0, " ERROR: ");
 			break;
 		case FATAL:
-			write(fd, " FATAL: ", strlen(" FATAL: "));
+			msg.insert(0, " FATAL: ");
 			break;
 		default:
 			break;
 	}
-	int n = write(fd, buf, count);
-	write(fd, "\n", strlen("\n"));
+	msg.insert(0, logtime());
+	msg.append("\n");
+	int n = write(fd, msg.c_str(), msg.size());
 	return n;
 }
 
-int Logger::write_screen(LEVEL level, int fd, const void *buf, size_t count)
+int Logger::write_screen(LEVEL level, int fd, std::string msg)
 {
-	std::string time = logtime();
 	switch(level){
 		case TRACE:
-			time.insert(0, "\033[36m");			//deepgreen
-			write(fd, time.c_str(), time.size());
-			write(fd, " TRACE: ", strlen(" TRACE: "));
+			msg.insert(0, " TRACE: ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[36m");			//deepgreen
 			break;
 		case DEBUG:
-			time.insert(0, "\033[32m");			//green
-			write(fd, time.c_str(), time.size());
-			write(fd, " DEBUG: ", strlen(" DEBUG: "));
+			msg.insert(0, " DEBUG: ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[32m");			//green
 			break;
 		case INFO:
-			time.insert(0, "\033[34m");			//blue
-			write(fd, time.c_str(), time.size());
-			write(fd, " INFO: ", strlen(" INFO: "));
+			msg.insert(0, " INFO:  ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[34m");			//blue
 			break;
 		case WARN:
-			time.insert(0, "\033[35m");			//purple
-			write(fd, time.c_str(), time.size());
-			write(fd, " WARN: ", strlen(" WARN: "));
+			msg.insert(0, " WARN:  ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[35m");			//purple
 			break;
 		case ERROR:
-			time.insert(0, "\033[33m");			//yellow
-			write(fd, time.c_str(), time.size());
-			write(fd, " ERROR: ", strlen(" ERROR: "));
+			msg.insert(0, " ERROR: ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[33m");			//yellow
 			break;
 		case FATAL:
-			time.insert(0, "\033[31m");			//red
-			write(fd, time.c_str(), time.size());
-			write(fd, " FATAL: ", strlen(" FATAL: "));
+			msg.insert(0, " FATAL: ");
+			msg.insert(0, logtime());
+			msg.insert(0, "\033[31m");			//red
 			break;
 		default:
 			break;
 	}
-	int n = write(fd, buf, count);
-	write(fd, "\033[0m\n", strlen("\033[0m\n"));
+	msg.append("\033[0m\n");
+	int n = write(fd, msg.c_str(), msg.size());
 	return n;
 }
 

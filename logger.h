@@ -38,8 +38,8 @@ class Logger{
 		Logger& operator=(const Logger&);	// forbide assignment contruct
 
 		//this will add time and level in head, insert a new line
-		int write_log(LEVEL level, int fd, const void *buf, size_t count);
-		int write_screen(LEVEL level, int fd, const void *buf, size_t count);
+		int write_log(LEVEL level, int fd, std::string msg);
+		int write_screen(LEVEL level, int fd, std::string msg);
 		
 		std::string logtime();
 
