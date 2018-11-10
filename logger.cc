@@ -12,6 +12,8 @@
 #include <signal.h>
 #include "logger.h"
 
+#define DATE_TIME_LEN 30
+
 Logger::Logger(std::string file):level(INFO), cli(1)
 {
 	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
@@ -374,7 +376,7 @@ std::string Logger::logtime()
         gettimeofday(&tv, NULL);
         memset(timeArray, 0, sizeof(timeArray));
         strftime(timeArray, sizeof(timeArray) - 1, "%F %T", localtime(&tv.tv_sec));
-	ss << std::string(timeArray) << "." << tv.tv_usec;
+	ss << std::string(timeArray) << "." << tv.tv_usec << "(us)          "; // blank is essential format
 	
-	return ss.str();
+	return ss.str().substr(0, DATE_TIME_LEN);
 }
