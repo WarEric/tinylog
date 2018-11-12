@@ -2,6 +2,7 @@
  * by wareric@163.com 2018-10-21
  **/
 #include <iostream>
+#include <stdlib.h>
 #include <cstring>
 #include <sstream>
 #include <sys/types.h>
@@ -11,8 +12,6 @@
 #include <unistd.h>
 #include <signal.h>
 #include "logger.h"
-
-#define DATE_TIME_LEN 30
 
 Logger::Logger(std::string file):level(INFO), cli(1)
 {
@@ -57,6 +56,8 @@ Logger::~Logger()
 {
 	if(fd > 0) close(fd);
 	pthread_mutex_destroy(&mutex);
+	if(cli)
+		write(STDOUT_FILENO, "\033[0m", strlen("\033[0m"));
 }
 
 void Logger::trace(std::string msg)
@@ -371,12 +372,15 @@ std::string Logger::logtime()
 {
 	struct timeval  tv;
 	char	timeArray[40];
-	std::stringstream ss;
 
         gettimeofday(&tv, NULL);
         memset(timeArray, 0, sizeof(timeArray));
         strftime(timeArray, sizeof(timeArray) - 1, "%F %T", localtime(&tv.tv_sec));
-	ss << std::string(timeArray) << "." << tv.tv_usec << "(us)          "; // blank is essential format
-	
-	return ss.str().substr(0, DATE_TIME_LEN);
+
+	std::string usecond(std::to_string(tv.tv_usec) + "(us)               "); // blank is essential format
+	usecond = usecond.substr(0, 6+4);
+
+	std::stringstream ss;
+	ss << std::string(timeArray) << "." << usecond;
+	return ss.str();
 }
