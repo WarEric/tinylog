@@ -13,8 +13,22 @@
 #include <signal.h>
 #include "logger.h"
 
-Logger::Logger(std::string file):level(INFO), cli(1)
+namespace tinylog{
+
+Logger::Logger():clilevel(INFO)
 {
+	fd = -1;
+	opencli = 1;
+	
+	if(pthread_mutex_init(&mutex, NULL) != 0)
+	{
+		std::cerr << "logger pthread_mutex_init fail" << std::endl;
+	}
+}
+
+Logger::Logger(std::string file, LEVEL lev):fdlevel(lev)
+{
+	opencli = 0;
 	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
 		std::cerr << "create logfile " << file << " fail." << std::endl;
 		fd = -1;
@@ -26,26 +40,25 @@ Logger::Logger(std::string file):level(INFO), cli(1)
 	}
 }
 
-Logger::Logger(std::string file, LEVEL lev):level(lev), cli(1)
+Logger::Logger(int openflag, LEVEL lev):clilevel(lev)
 {
-	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
-		std::cerr << "create logfile " << file << " fail." << std::endl;
-		fd = -1;
-	}
-
+	fd = -1;
+	opencli = openflag;
+	
 	if(pthread_mutex_init(&mutex, NULL) != 0)
 	{
 		std::cerr << "logger pthread_mutex_init fail" << std::endl;
 	}
 }
 
-Logger::Logger(std::string file, LEVEL lev, int openflag):level(lev), cli(openflag)
+Logger::Logger(std::string file, LEVEL filelev, int openflag, LEVEL clilev):fdlevel(filelev), clilevel(clilev)
 {
-	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
+	opencli = openflag;
+	if((fd = open(file.c_str(), O_WRONLY|O_CREAT|O_TRUNC|O_CLOEXEC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0){
 		std::cerr << "create logfile " << file << " fail." << std::endl;
 		fd = -1;
 	}
-
+	
 	if(pthread_mutex_init(&mutex, NULL) != 0)
 	{
 		std::cerr << "logger pthread_mutex_init fail" << std::endl;
@@ -56,7 +69,7 @@ Logger::~Logger()
 {
 	if(fd > 0) close(fd);
 	pthread_mutex_destroy(&mutex);
-	if(cli)
+	if(opencli)
 		write(STDOUT_FILENO, "\033[0m", strlen("\033[0m"));
 }
 
@@ -72,16 +85,20 @@ void Logger::trace(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= TRACE)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= TRACE)
 			write_log(TRACE, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= TRACE)
 			write_screen(TRACE, STDOUT_FILENO, msg);
 	}
 
@@ -91,7 +108,7 @@ void Logger::trace(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -111,16 +128,20 @@ void Logger::debug(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= DEBUG)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= DEBUG)
 			write_log(DEBUG, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= DEBUG)
 			write_screen(DEBUG, STDOUT_FILENO, msg);
 	}
 
@@ -130,7 +151,7 @@ void Logger::debug(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -150,16 +171,20 @@ void Logger::info(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= INFO)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= INFO)
 			write_log(INFO, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= INFO)
 			write_screen(INFO, STDOUT_FILENO, msg);
 	}
 
@@ -169,7 +194,7 @@ void Logger::info(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -189,16 +214,20 @@ void Logger::warn(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= WARN)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= WARN)
 			write_log(WARN, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= WARN)
 			write_screen(WARN, STDOUT_FILENO, msg);
 	}
 
@@ -208,7 +237,7 @@ void Logger::warn(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -228,16 +257,20 @@ void Logger::error(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= ERROR)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= ERROR)
 			write_log(ERROR, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= ERROR)
 			write_screen(ERROR, STDOUT_FILENO, msg);
 	}
 
@@ -247,7 +280,7 @@ void Logger::error(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -267,16 +300,20 @@ void Logger::fatal(std::string msg)
 		std::string str("logger sigprocmask SIG_BLOCK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
 
-	if(level <= FATAL)
+	if(fd > 0)
 	{
-		if(fd > 0)
+		if(fdlevel <= FATAL)
 			write_log(FATAL, fd, msg);
-		if(cli)
+	}
+
+	if(opencli != 0)
+	{
+		if(clilevel <= FATAL)
 			write_screen(FATAL, STDOUT_FILENO, msg);
 	}
 
@@ -286,7 +323,7 @@ void Logger::fatal(std::string msg)
 		std::string str("logger sigprocmask SIG_SETMASK error");
 		if(fd > 0)
 			write_log(FATAL, fd, str);
-		if(cli)
+		if(opencli)
 			write_screen(FATAL, STDOUT_FILENO, str);
 		exit(EXIT_FAILURE);
 	}
@@ -383,4 +420,6 @@ std::string Logger::logtime()
 	std::stringstream ss;
 	ss << std::string(timeArray) << "." << usecond;
 	return ss.str();
+}
+
 }

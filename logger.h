@@ -10,6 +10,7 @@
 #define LOGGER_H_H
 #include <string>
 
+namespace tinylog{
 class Logger{
 	public:
 		enum LEVEL{
@@ -20,10 +21,11 @@ class Logger{
 			ERROR,
 			FATAL
 		};
-	
-		Logger(std::string file);
+
+		Logger();
 		Logger(std::string file, LEVEL lev);
-		Logger(std::string file, LEVEL lev, int openflag);
+		Logger(int openflag, LEVEL lev);
+		Logger(std::string file, LEVEL filelev, int openflag, LEVEL clilev);
 
 		~Logger();
 		
@@ -43,9 +45,11 @@ class Logger{
 		
 		std::string logtime();
 
-		int level;				// trace < debug < info < warn < error < fatal
 		int fd;					// logfd
-		int cli;				// 1 represent print to CLI, 0 represent not.
+		LEVEL fdlevel;				// trace < debug < info < warn < error < fatal
+		int opencli;				// 1 represent print to CLI, 0 represent not.
+		LEVEL clilevel;				// trace < debug < info < warn < error < fatal
 		pthread_mutex_t mutex;
 };
+}
 #endif
