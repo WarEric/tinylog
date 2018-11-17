@@ -1,8 +1,9 @@
 #include "logger.h"
+using tinylog::Logger;
 
 int main(void)
 {
-	Logger logger("example.log", Logger::TRACE, 1);
+	Logger logger("example.log", Logger::TRACE, 1, Logger::TRACE);
 
 	logger.trace("this is trace");
 	logger.debug("this is debug");
