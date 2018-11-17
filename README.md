@@ -12,10 +12,11 @@ as log4j(java) library. Actually the log level is set as log4j level.
 Just use the logger class in your code, such as example.cc
 ```c++
 #include "logger.h"
+using tinylog::Logger;
 
 int main(void)
 {
-        Logger logger("example.log", Logger::TRACE, 1); 
+        Logger logger("example.log", Logger::TRACE, 1, Logger::TRACE);
 
         logger.trace("this is trace");
         logger.debug("this is debug");
@@ -59,18 +60,18 @@ You console screen will print colorful logger messages and a log file will be cr
 
 |constructor|initial result|
 |:----------|:-------|
-|Logger(std::string file)|logfile(file),  level(INFO),  cli(1)|
-|Logger(std::string file, LEVEL lev)|logfile(file),  level(lev),  cli(1)|
-|Logger(std::string file, LEVEL lev, int openflag)|logfile(file),  level(lev),  cli(openflag)|
+|Logger()|opencli(1),  clilevel(INFO)|
+|Logger(std::string file, LEVEL lev)|logfile(file),  fdlevel(lev)|
+|Logger(int openflag, LEVEL lev)|opencli(openflag),  clilevel(lev)|
+|Logger(std::string file, LEVEL filelev, int openflag, LEVEL clilev)|logfile(file), fdlevel(filelev), opencli(openflag), clilevel(clilev)|
 
 ### screen
 You can choose to open or close logger messages printed on your screen by set openflag to 1 or 0 (0 represent close, others represent open).
-The openflag is set open by default.
 ### level
 level orders
 ```
 TRACE < DEBUG < INFO < WARN < ERROR < FATAL
 ```
-If you set log level to A, the log level which smaller than A won't be logged. The default logger level is INFO. 
+If you set log level to A, the log level which smaller than A won't be logged.
 # attentions
 - Don't forget to append '-lphtread' when you compile logger.cc, otherwise this compile order will fail.
