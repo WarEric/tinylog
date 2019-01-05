@@ -9,6 +9,9 @@
 #ifndef LOGGER_H_H
 #define LOGGER_H_H
 #include <string>
+#include <string.h>
+
+#define LOG_STRERR(errno) (std::to_string(errno)+" "+std::string(strerror(errno)))
 
 namespace tinylog{
 class Logger{
