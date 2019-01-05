@@ -11,7 +11,20 @@
 #include <string>
 #include <string.h>
 
+//debug message help
+
 #define LOG_STRERR(errno) (std::to_string(errno)+" "+std::string(strerror(errno)))
+
+//FUNC: The unadorned name of the enclosing function.
+//LINE: An integer representing the current source line number.
+//FILE: The name of the current source file.
+//TIME: The compilation time of the current source file.
+//DATE: The compilation date of the current source file.
+#define LOG_FUNC (std::string("[").append(__func__).append("] "))
+#define LOG_LINE (std::string("[Line ").append(std::to_string(__LINE__)).append("] "))
+#define LOG_FILE (std::string("[").append(__FILE__).append("] "))
+#define LOG_TIME (std::string("[").append(__TIME__).append("] "))
+#define LOG_DATE (std::string("[").append(__DATE__).append("] "))
 
 namespace tinylog{
 class Logger{
